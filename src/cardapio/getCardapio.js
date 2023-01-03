@@ -1,8 +1,12 @@
 const axios = require('axios');
 const cheerio = require('cheerio');
 
+let dateObj = new Date();
 
-async function getAllCardapio (){
+
+
+
+async function getAllCardapio (next){
     const siteRuUrl ='https://saest.ufpa.br/ru/index.php/component/cardapio';
     try {
         const {data} = await axios({
@@ -23,18 +27,20 @@ async function getAllCardapio (){
 
              let keyIdx = 0
              const cardapioObj = {}
-             const k = [{}]
 
             if (parentIdx){
                 $(parentElem).children().each((childIdx, childElem) => {
 
                     let tdValue = $(childElem).text()
                     const p = tdValue.replace(/\t\s+/g, '').trim().split(/[;\n:]/)
-                    
+                
                     cardapioObj[keys[keyIdx]] = p
+                    cardapioObj.dia[0] = cardapioObj.dia[0].replace('/', '-')
                     keyIdx++
                 })
-                return cardapioObj;
+                cardapioObj.dia[1] = (cardapioObj.dia[1]).replace('/', '-')+`-${dateObj.getFullYear()}`
+                
+                return next(cardapioObj);
             }
             
         });

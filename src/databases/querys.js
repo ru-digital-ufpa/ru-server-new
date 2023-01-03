@@ -1,125 +1,41 @@
-const bcrypt = require("bcrypt");
-const { User, Cadapio, Reclama, Feedback } = require("./schema");
+const { User, Cardapio, Reclama, Feedback } = require("./schema");
 const fs = require("fs");
-const { reject } = require("bcrypt/promises");
 
-async function findUser(userInfo) {
-  const email = userInfo.email;
-  const user = await User.findOne({ email });
-  return user;
-}
-
-async function findUserByIde(_id) {
-  const user = await User.findById({ _id });
-  return user;
-}
-
-async function validateUser(email, username) {
-  const verifyUser = await User.findOne(
-    { $or: [{ email }, { username }] },
-    (err, doc) => {
-      if (err) {
-        return err;
-      }
-      return doc;
-    }
-  ).clone();
-  return verifyUser;
-}
-
-async function criaNovoUsario(reqBody) {
-  const encryptedPassword = await bcrypt.hash(reqBody.password, 10);
-  const admin = reqBody.codigo;
-  const codigoServidor = process.env.CODIGO_ADMIN;
-
-  const adminCodigo = codigoServidor === admin;
-
-  if (!adminCodigo) {
-    return reject("O codigo da admin incorreto");
-  }
-  const newUser = new User({
-    name: reqBody.name,
-    username: reqBody.username,
-    email: reqBody.email,
-    password: encryptedPassword,
-    profileimage: null,
-  });
-
-  try {
-    const saveNewUser = await newUser.save();
-    return saveNewUser;
-  } catch (err) {
-    return err;
-  }
-}
-
-async function postCadapio(req, next) {
-  const id = req.session.passport.user.id;
-
-  const findUserIfexist = await findUserByIde(id);
-  const cadapJa = req.body.data;
-  const cadapioJaexiste = await Cadapio.findOne({ data: cadapJa });
-  if (!findUserIfexist) {
-    return;
-  }
-  if (cadapioJaexiste) {
-    return reject({
-      err1: "Verifique !!...",
-      err2: "A data do cardapio já existe.",
-    });
-  }
-
-  const {
-    data,
-    refeicao1,
-    nomeDaRefeiAmo,
-    amo1,
-    amo2,
-    amo3,
-    amo4,
-    amo5,
-    refeicao2,
-    vegetariano1,
-    nomeDaRefeiJan,
-    jan1,
-    jan2,
-    jan3,
-    jan4,
-    jan5,
-    vegetariano2,
-  } = req.body;
-
-  const novoCadapio = new Cadapio({
-    data: data,
+async function postCadapio(dados, next) {
+  
+  const novoCadapio = new Cardapio({
+    dia: dados.dia[0],
+    data: dados.dia[1],
     amoco: {
-      refeicao: refeicao1,
-      nomeDaRefei: nomeDaRefeiAmo,
+      refeicao: "ALMOÇO",
+      nomeDaRefei: dados.almoco[0],
       ingredintes: {
-        amo1: amo1,
-        amo2: amo2,
-        amo3: amo3,
-        amo4: amo4,
-        amo5: amo5,
+        amo1: dados.almoco[3],
+        amo2: dados.almoco[4],
+        amo3: dados.almoco[5],
+        amo4: dados.almoco[6],
+        amo5: dados.almoco[7],
       },
-      vegetariano1: vegetariano1,
+      vegetariano1: dados.almoco[2],
     },
     jantar: {
-      refeicao: refeicao2,
-      nomeDaRefei: nomeDaRefeiJan,
+      refeicao: "JANTAR",
+      nomeDaRefei: dados.jantar[0],
       ingredintes: {
-        jan1: jan1,
-        jan2: jan2,
-        jan3: jan3,
-        jan4: jan4,
-        jan5: jan5,
+        jan1: dados.almoco[3],
+        jan2: dados.almoco[4],
+        jan3: dados.almoco[5],
+        jan4: dados.almoco[6],
+        jan5: dados.almoco[7],
       },
-      vegetariano2: vegetariano2,
+      vegetariano2: dados.almoco[2],
     },
-    admin: id,
   });
 
   await novoCadapio.save((err, doc) => {
     if (err) {
+      updateCardapio(dados, next);
+      //console.log(err);
       return err;
     }
     return next(doc);
@@ -132,7 +48,7 @@ async function todosOsReclameAqui(next) {
 }
 
 async function todosOscardpio(next) {
-  const rs = await Cadapio.find((e, d) => d).clone();
+  const rs = await Cardapio.find((e, d) => d).clone();
   return next(rs);
 }
 
@@ -141,67 +57,44 @@ async function findCardapioByIde(_id, next) {
   return next(cadapio);
 }
 
-async function updateCardapio(req, next) {
-  const id = req.params.id;
-
-  const findCardapiofexist = await findCardapioByIde(id, (e) => e);
-
-  if (findCardapiofexist !== null) {
-    const {
-      data,
-      refeicao1,
-      nomeDaRefeiAmo,
-      amo1,
-      amo2,
-      amo3,
-      amo4,
-      amo5,
-      refeicao2,
-      vegetariano1,
-      nomeDaRefeiJan,
-      jan1,
-      jan2,
-      jan3,
-      jan4,
-      jan5,
-      vegetariano2,
-    } = req.body;
-
-    const toUpdate = {
-      data: data,
-      amoco: {
-        refeicao: refeicao1,
-        nomeDaRefei: nomeDaRefeiAmo,
-        ingredintes: {
-          amo1: amo1,
-          amo2: amo2,
-          amo3: amo3,
-          amo4: amo4,
-          amo5: amo5,
-        },
-        vegetariano1: vegetariano1,
+async function updateCardapio(dados, next) {
+ 
+  const toUpdate = {
+    dia: dados.dia[0],
+    data: dados.dia[1],
+    amoco: {
+      refeicao: "ALMOÇO",
+      nomeDaRefei: dados.almoco[0],
+      ingredintes: {
+        amo1: dados.almoco[3],
+        amo2: dados.almoco[4],
+        amo3: dados.almoco[5],
+        amo4: dados.almoco[6],
+        amo5: dados.almoco[7],
       },
-      jantar: {
-        refeicao: refeicao2,
-        nomeDaRefei: nomeDaRefeiJan,
-        ingredintes: {
-          jan1: jan1,
-          jan2: jan2,
-          jan3: jan3,
-          jan4: jan4,
-          jan5: jan5,
-        },
-        vegetariano2: vegetariano2,
+      vegetariano1: dados.almoco[2],
+    },
+    jantar: {
+      refeicao: "JANTAR",
+      nomeDaRefei: dados.jantar[0],
+      ingredintes: {
+        jan1: dados.almoco[3],
+        jan2: dados.almoco[4],
+        jan3: dados.almoco[5],
+        jan4: dados.almoco[6],
+        jan5: dados.almoco[7],
       },
-    };
+      vegetariano2: dados.almoco[2],
+    },
+  };
+  await Cardapio.findOneAndUpdate({ data: dados.dia[1] },toUpdate, (err, duc) => {
+    if (err) {
+      console.log(err);
+    }
+    return next(duc);
+  }).clone();
 
-    await Cadapio.findByIdAndUpdate({ _id: id }, toUpdate, (err, duc) => {
-      if (err) {
-        console.log(err);
-      }
-    }).clone();
-  }
-  return next();
+  //return next(duc);
 }
 
 async function crioReclamaAqui(req, res) {
@@ -224,7 +117,8 @@ async function crioReclamaAqui(req, res) {
 }
 
 async function dropCollection(next) {
-  Cadapio.collection.drop()
+  Cardapio.collection
+    .drop()
     .then(() => next())
     .catch((err) => console.error(err));
 }
@@ -248,10 +142,6 @@ async function crioFeedback(req, res) {
 }
 
 module.exports = {
-  findUser,
-  findUserByIde,
-  validateUser,
-  criaNovoUsario,
   postCadapio,
   todosOsReclameAqui,
   todosOscardpio,

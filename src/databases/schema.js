@@ -77,6 +77,10 @@ const feedbackiSchema = new Schema(
 //Schema para creiaar cardapio.
 const cadapioSchema = new Schema(
   {
+    dia: {
+      type: String,
+      required: true,
+    },
     data: {
       type: String,
       require: true,
@@ -89,12 +93,10 @@ const cadapioSchema = new Schema(
       },
       nomeDaRefei: {
         type: String,
-        require: true,
       },
       ingredintes: {
         amo1: {
           type: String,
-          require: true,
         },
         amo2: {
           type: String,
@@ -120,12 +122,10 @@ const cadapioSchema = new Schema(
       },
       nomeDaRefei: {
         type: String,
-        require: true,
       },
       ingredintes: {
         jan1: {
           type: String,
-          require: true,
         },
         jan2: {
           type: String,
@@ -144,10 +144,6 @@ const cadapioSchema = new Schema(
         type: String,
       },
     },
-    admin: {
-      type: Schema.Types.ObjectId,
-      ref: "user",
-    },
   },
   {
     timestamps: true,
@@ -155,14 +151,14 @@ const cadapioSchema = new Schema(
 );
 
 const User = mongoose.model("user", usersSchema);
-const Cadapio = mongoose.model("cadapio", cadapioSchema);
+const Cardapio = mongoose.model("cadapio", cadapioSchema);
 const Reclama = mongoose.model("reclamaAqui", reclamaAquiSchema);
 const Feedback = mongoose.model("feedback", feedbackiSchema);
 
 //exportar o modolar
 module.exports = {
   User,
-  Cadapio,
+  Cardapio,
   Reclama,
   Feedback,
 };
