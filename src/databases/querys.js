@@ -1,8 +1,9 @@
 const { User, Cardapio, Reclama, Feedback } = require("./schema");
 const fs = require("fs");
 
-async function postCadapio(dados, next) {
-  
+let toSend = [];
+
+async function postCardapio(dados, next) {
   const novoCadapio = new Cardapio({
     dia: dados.dia[0],
     data: dados.dia[1],
@@ -32,14 +33,16 @@ async function postCadapio(dados, next) {
     },
   });
 
-  await novoCadapio.save((err, doc) => {
+  const resolute = await novoCadapio.save((err, doc) => {
     if (err) {
-      updateCardapio(dados, next);
+      //updateCardapio(dados, next);
       //console.log(err);
       return err;
     }
-    return next(doc);
+    return doc;
   });
+  console.log("its not equal");
+  return next(resolute);
 }
 
 async function todosOsReclameAqui(next) {
@@ -58,7 +61,6 @@ async function findCardapioByIde(_id, next) {
 }
 
 async function updateCardapio(dados, next) {
- 
   const toUpdate = {
     dia: dados.dia[0],
     data: dados.dia[1],
@@ -87,13 +89,18 @@ async function updateCardapio(dados, next) {
       vegetariano2: dados.almoco[2],
     },
   };
-  await Cardapio.findOneAndUpdate({ data: dados.dia[1] },toUpdate, (err, duc) => {
-    if (err) {
-      console.log(err);
+  await Cardapio.findOneAndUpdate(
+    { data: dados.dia[1] },
+    toUpdate,
+    (err, duc) => {
+      if (err) {
+        console.log(err);
+        return false;
+      }
+      return true;
     }
-    return next(duc);
-  }).clone();
-
+  ).clone();
+  return;
   //return next(duc);
 }
 
@@ -119,7 +126,7 @@ async function crioReclamaAqui(req, res) {
 async function dropCollection(next) {
   Cardapio.collection
     .drop()
-    .then(() => next())
+    .then((e) => next(e))
     .catch((err) => console.error(err));
 }
 
@@ -142,7 +149,7 @@ async function crioFeedback(req, res) {
 }
 
 module.exports = {
-  postCadapio,
+  postCardapio,
   todosOsReclameAqui,
   todosOscardpio,
   findCardapioByIde,

@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const {
-  postCadapio,
+  postCardapio,
   todosOscardpio,
   dropCollection,
   updateCardapio,
@@ -9,31 +9,48 @@ const {
 
 const { getAllCardapio } = require("../cardapio/getCardapio");
 
-function drop() {
-  dropCollection(async (dc) => {
-    await dc;
-  });
-}
+router.get("/", async (req, res) => {
+  res.send("ok");
+});
 
-function update() {
-  getAllCardapio(async (next) => {
-    updateCardapio(await next, (dc) => {
-      console.log(dc);
+router.post("/new", async (req, res) => {
+  main();
+  res.send("ok");
+});
+
+router.get("/api", async (req, res) => {
+  const resolute = await todosOscardpio((doc) => doc);
+  res.json(resolute);
+});
+
+router.post("/drop", async (req, res) => {
+  await dropCollection((e) => {
+    res.send(e);
+  });
+});
+
+router.post("/update", async (req, res) => {
+  await update((callback) => {
+    //console.log(callback);
+  });
+  res.send("ok");
+});
+
+async function update(callback) {
+  await getAllCardapio(async (next) => {
+    updateCardapio(await next, (e) => {
+      //console.log(e);
+      return callback(e);
     });
   });
 }
 
 function main() {
   getAllCardapio(async (next) => {
-    postCadapio(await next, (e) => {
-      console.log(e);
+    postCardapio(await next, (e) => {
+      console.log("writing cardapio no database");
     });
   });
 }
 
-router.get("/api", async (req, res) => {
-  const resolut = await todosOscardpio((doc) => doc);
-  res.json(resolut);
-});
-
-module.exports = { main, drop, router, update };
+module.exports = { main, router };

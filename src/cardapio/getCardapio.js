@@ -1,3 +1,4 @@
+require('dotenv');
 const axios = require('axios');
 const cheerio = require('cheerio');
 
@@ -7,7 +8,7 @@ let dateObj = new Date();
 
 
 async function getAllCardapio (next){
-    const siteRuUrl ='https://saest.ufpa.br/ru/index.php/component/cardapio';
+    const siteRuUrl = process.env.RUSITE;
     try {
         const {data} = await axios({
             method: 'get',
