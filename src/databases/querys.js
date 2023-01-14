@@ -23,13 +23,13 @@ async function postCardapio(dados, next) {
       refeicao: "JANTAR",
       nomeDaRefei: dados.jantar[0],
       ingredintes: {
-        jan1: dados.almoco[3],
-        jan2: dados.almoco[4],
-        jan3: dados.almoco[5],
-        jan4: dados.almoco[6],
-        jan5: dados.almoco[7],
+        jan1: dados.jantar[3],
+        jan2: dados.jantar[4],
+        jan3: dados.jantar[5],
+        jan4: dados.jantar[6],
+        jan5: dados.jantar[7],
       },
-      vegetariano2: dados.almoco[2],
+      vegetariano2: dados.jantar[2],
     },
   });
 
@@ -41,7 +41,7 @@ async function postCardapio(dados, next) {
     }
     return doc;
   });
-  console.log("its not equal");
+  // console.log("its not equal");
   return next(resolute);
 }
 
@@ -80,18 +80,20 @@ async function updateCardapio(dados, next) {
       refeicao: "JANTAR",
       nomeDaRefei: dados.jantar[0],
       ingredintes: {
-        jan1: dados.almoco[3],
-        jan2: dados.almoco[4],
-        jan3: dados.almoco[5],
-        jan4: dados.almoco[6],
-        jan5: dados.almoco[7],
+        jan1: dados.jantar[3],
+        jan2: dados.jantar[4],
+        jan3: dados.jantar[5],
+        jan4: dados.jantar[6],
+        jan5: dados.jantar[7],
       },
-      vegetariano2: dados.almoco[2],
+      vegetariano2: dados.jantar[2],
     },
   };
+  // console.log(toUpdate);
   await Cardapio.findOneAndUpdate(
+
     { data: dados.dia[1] },
-    toUpdate,
+    toUpdate, {upsert: true},
     (err, duc) => {
       if (err) {
         console.log(err);

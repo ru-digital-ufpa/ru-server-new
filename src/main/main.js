@@ -48,7 +48,7 @@ async function update(callback) {
 function main() {
   getAllCardapio(async (next) => {
     postCardapio(await next, (e) => {
-      console.log("writing cardapio no database");
+      // console.log("writing cardapio no database");
     });
   });
 }

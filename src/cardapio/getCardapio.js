@@ -41,6 +41,7 @@ async function getAllCardapio (next){
                 })
                 cardapioObj.dia[1] = (cardapioObj.dia[1]).replace('/', '-')+`-${dateObj.getFullYear()}`
                 
+                // console.log(cardapioObj);
                 return next(cardapioObj);
             }
             
