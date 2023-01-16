@@ -1,7 +1,4 @@
 const { User, Cardapio, Reclama, Feedback } = require("./schema");
-const fs = require("fs");
-
-let toSend = [];
 
 async function postCardapio(dados, next) {
   const novoCadapio = new Cardapio({
@@ -50,7 +47,7 @@ async function todosOsReclameAqui(next) {
   return next(rs);
 }
 
-async function todosOscardpio(next) {
+async function todosOsCardpio(next) {
   const rs = await Cardapio.find((e, d) => d).clone();
   return next(rs);
 }
@@ -91,9 +88,9 @@ async function updateCardapio(dados, next) {
   };
   // console.log(toUpdate);
   await Cardapio.findOneAndUpdate(
-
     { data: dados.dia[1] },
-    toUpdate, {upsert: true},
+    toUpdate,
+    { upsert: true },
     (err, duc) => {
       if (err) {
         console.log(err);
@@ -126,10 +123,20 @@ async function crioReclamaAqui(req, res) {
 }
 
 async function dropCollection(next) {
-  Cardapio.collection
-    .drop()
-    .then((e) => next(e))
-    .catch((err) => console.error(err));
+
+  const toBeVerified = await todosOsCardpio((e) => e);
+  const isToBeDrop = toBeVerified.length;
+
+  // console.log(isToBeDrop);
+
+  if (isToBeDrop > 6) {
+    Cardapio.collection
+      .drop()
+      .then((e) => next(e))
+      .catch((err) => console.error(err));
+  } else {
+    return next(false);
+  }
 }
 
 async function crioFeedback(req, res) {
@@ -153,7 +160,7 @@ async function crioFeedback(req, res) {
 module.exports = {
   postCardapio,
   todosOsReclameAqui,
-  todosOscardpio,
+  todosOsCardpio,
   findCardapioByIde,
   crioReclamaAqui,
   crioFeedback,

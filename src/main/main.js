@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const {
   postCardapio,
-  todosOscardpio,
+  todosOsCardpio,
   dropCollection,
   updateCardapio,
 } = require("../databases/querys");
@@ -19,13 +19,18 @@ router.post("/new", async (req, res) => {
 });
 
 router.get("/api", async (req, res) => {
-  const resolute = await todosOscardpio((doc) => doc);
+  const resolute = await todosOsCardpio((doc) => doc);
   res.json(resolute);
 });
 
 router.post("/drop", async (req, res) => {
   await dropCollection((e) => {
-    res.send(e);
+    if (e) {
+      main();
+      return res.send(e);
+    } else {
+      res.send(e);
+    }
   });
 });
 
