@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
-//Schema para creiar usaurío.
+//Schema para criar usaurío.
 const usersSchema = new Schema(
   {
     name: {
@@ -144,6 +144,19 @@ const cadapioSchema = new Schema(
         type: String,
       },
     },
+  }
+  // {
+  //   timestamps: true,
+  // }
+);
+
+const postUsersTokens = new Schema(
+  {
+    token: {
+      type: String,
+      required: true,
+      unique: true,
+    },
   },
   {
     timestamps: true,
@@ -154,6 +167,7 @@ const User = mongoose.model("user", usersSchema);
 const Cardapio = mongoose.model("cadapio", cadapioSchema);
 const Reclama = mongoose.model("reclamaAqui", reclamaAquiSchema);
 const Feedback = mongoose.model("feedback", feedbackiSchema);
+const UsersTokens = mongoose.model("tokens", postUsersTokens);
 
 //exportar o modolar
 module.exports = {
@@ -161,4 +175,5 @@ module.exports = {
   Cardapio,
   Reclama,
   Feedback,
+  UsersTokens,
 };

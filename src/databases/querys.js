@@ -1,4 +1,4 @@
-const { User, Cardapio, Reclama, Feedback } = require("./schema");
+const { User, Cardapio, Reclama, Feedback, UsersTokens } = require("./schema");
 
 async function postCardapio(dados, next) {
   const novoCadapio = new Cardapio({
@@ -52,9 +52,9 @@ async function todosOsCardpio(next) {
   return next(rs);
 }
 
-async function findCardapioByIde(_id, next) {
-  const cadapio = await Cadapio.findById({ _id });
-  return next(cadapio);
+async function findCardapioByDate(data, next) {
+  const cardapio = await Cardapio.findOne({ data: data });
+  return next(cardapio);
 }
 
 async function updateCardapio(dados, next) {
@@ -103,6 +103,32 @@ async function updateCardapio(dados, next) {
   //return next(duc);
 }
 
+async function postUsersTokens(req, next) {
+  const token = req.body;
+  const isOkToInsect = await UsersTokens.findOne(token);
+
+  if (isOkToInsect != null) {
+    const isToken = new UsersTokens(token);
+    await isToken.save((err, duc) => {
+      if (err) {
+        return next(false);
+      } else {
+        // console.log(duc);
+        return next(true);
+      }
+    });
+  }
+  return next("exiting");
+}
+
+async function getAllUsersTokens(next) {
+  allTokens = [];
+  const rs = await UsersTokens.find((err, d) => d).clone();
+  rs.forEach((tk) => allTokens.push(tk.token));
+  console.log(allTokens);
+  return next(allTokens);
+}
+
 async function crioReclamaAqui(req, res) {
   const { nome, email, curso, setor, msg } = req.body;
   const newReclamaAqui = new Reclama({
@@ -123,7 +149,6 @@ async function crioReclamaAqui(req, res) {
 }
 
 async function dropCollection(next) {
-
   const toBeVerified = await todosOsCardpio((e) => e);
   const isToBeDrop = toBeVerified.length;
 
@@ -161,9 +186,11 @@ module.exports = {
   postCardapio,
   todosOsReclameAqui,
   todosOsCardpio,
-  findCardapioByIde,
+  findCardapioByDate,
   crioReclamaAqui,
   crioFeedback,
   updateCardapio,
   dropCollection,
+  postUsersTokens,
+  getAllUsersTokens,
 };
