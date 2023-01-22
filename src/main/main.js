@@ -65,7 +65,7 @@ router.post("/drop", async (req, res) => {
 router.post("/update", async (req, res) => {
   //for today date
   const date = new Date();
-  const toDayDate = `${date.getDate()-1}-0${
+  const toDayDate = `${date.getDate()}-0${
     date.getMonth() + 1
   }-${date.getFullYear()}`;
 
