@@ -1,4 +1,6 @@
+
 const { User, Cardapio, Reclama, Feedback, UsersTokens } = require("./schema");
+
 
 async function postCardapio(dados, next) {
   const novoCadapio = new Cardapio({
@@ -107,7 +109,7 @@ async function postUsersTokens(req, next) {
   const token = req.body;
   const isOkToInsect = await UsersTokens.findOne(token);
 
-  if (isOkToInsect != null) {
+  if (isOkToInsect == null) {
     const isToken = new UsersTokens(token);
     await isToken.save((err, duc) => {
       if (err) {
@@ -125,7 +127,7 @@ async function getAllUsersTokens(next) {
   allTokens = [];
   const rs = await UsersTokens.find((err, d) => d).clone();
   rs.forEach((tk) => allTokens.push(tk.token));
-  console.log(allTokens);
+  // console.log(allTokens);
   return next(allTokens);
 }
 
@@ -149,13 +151,17 @@ async function crioReclamaAqui(req, res) {
 }
 
 async function dropCollection(next) {
+  // verify collection if new cardápio has ben added or not.
   const toBeVerified = await todosOsCardpio((e) => e);
   const isToBeDrop = toBeVerified.length;
 
   // console.log(isToBeDrop);
 
   if (isToBeDrop > 6) {
-    Cardapio.collection
+    // notify all users
+  //  await novoCardapioDaSemana();
+    // drop collection
+    await Cardapio.collection
       .drop()
       .then((e) => next(e))
       .catch((err) => console.error(err));

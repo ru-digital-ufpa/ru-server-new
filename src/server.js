@@ -36,8 +36,8 @@ mongoose.connect(
 
 const { main, drop, router, update } = require("./main/main.js");
 
-const {notifyUserCardapioDeHojeMudou} = require("./firebase/push-notification");
-notifyUserCardapioDeHojeMudou();
+// const {notifyUserCardapioDeHojeMudou} = require("./firebase/push-notification");
+// notifyUserCardapioDeHojeMudou();
 
 main();
 
