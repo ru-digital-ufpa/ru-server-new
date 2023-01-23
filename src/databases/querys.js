@@ -163,7 +163,7 @@ async function dropCollection(next) {
     // drop collection
     await Cardapio.collection
       .drop()
-      .then((e) => next(e))
+      .then((e) => next(true))
       .catch((err) => console.error(err));
   } else {
     return next(false);
