@@ -3,16 +3,18 @@ const express = require("express");
 const cors = require("cors");
 const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
-//const cron = require("node-cron");
+const helmet = require("helmet");
+
+const port = process.env.PORT || 5500;
 
 const app = express();
+
+app.use(helmet());
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(bodyParser.json());
-//app.set('json spaces', 40);
 
-const port = process.env.PORT || 5500;
 
 //connecting mongo database
 mongoose.set("strictQuery", false);
