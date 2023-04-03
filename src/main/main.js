@@ -28,7 +28,7 @@ router.post("/new", async (req, res) => {
 
 router.get("/api", async (req, res) => {
   const resolute = await todosOsCardpio((doc) => doc);
-  if (resolute.length > 6) {
+  if (resolute.length > 5) {
     await dropCollection((e) => {
       if (e) {
         main();
