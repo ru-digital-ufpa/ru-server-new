@@ -163,11 +163,27 @@ const postUsersTokens = new Schema(
   }
 );
 
+const postNews = new Schema(
+  {
+    imageLink: {
+      type: String,
+      unique: true,
+    },
+    newsMesg: {
+      type: String,
+    },
+  },
+  {
+    timestamps: true,
+  }
+);
+
 const User = mongoose.model("user", usersSchema);
 const Cardapio = mongoose.model("cadapio", cadapioSchema);
 const Reclama = mongoose.model("reclamaAqui", reclamaAquiSchema);
 const Feedback = mongoose.model("feedback", feedbackiSchema);
 const UsersTokens = mongoose.model("tokens", postUsersTokens);
+const News = mongoose.model("news", postNews);
 
 //exportar o modolar
 module.exports = {
@@ -176,4 +192,5 @@ module.exports = {
   Reclama,
   Feedback,
   UsersTokens,
+  News,
 };

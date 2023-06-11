@@ -1,5 +1,5 @@
 
-const { User, Cardapio, Reclama, Feedback, UsersTokens } = require("./schema");
+const { User, Cardapio, Reclama, Feedback, UsersTokens, News } = require("./schema");
 
 
 async function postCardapio(dados, next) {
@@ -175,17 +175,38 @@ async function crioFeedback(req, res) {
   const newFeedback = new Feedback({
     nome: nome,
     email: email,
-
     msg: msg,
   });
 
   try {
     await newFeedback.save().then((e) => {
-      return res.status(200).json({ msy: "ok" });
+      return res.status(200).json({ msg: "ok" });
     });
   } catch (err) {
-    return res.status(404).json({ msy: "ok" });
+    return res.status(404).json({ msg: "ok" });
   }
+}
+
+async function postNews(req, res){
+  console.log(req.body);
+  const { imageLink, newsMesg} = req.body;
+  const newNews = new News({
+    imageLink: imageLink,
+    newsMesg: newsMesg,
+  });
+  try {
+    await newNews.save().then((doc)=>{
+      // console.log(e);
+      return res.status(200).json({msg:"ok"})
+    })
+  }catch (err){
+    return res.status(404).json({ msg: "cant post new News" });
+  }
+}
+
+async function getNews(next){
+  const res = await News.find((e, doc)=> doc).clone();
+  return next(res);
 }
 
 module.exports = {
@@ -199,4 +220,6 @@ module.exports = {
   dropCollection,
   postUsersTokens,
   getAllUsersTokens,
+  postNews,
+  getNews,
 };

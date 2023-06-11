@@ -9,6 +9,8 @@ const {
   updateCardapio,
   findCardapioByDate,
   postUsersTokens,
+  postNews,
+  getNews,
 } = require("../databases/querys");
 
 const { getAllCardapio } = require("../cardapio/getCardapio");
@@ -70,7 +72,7 @@ router.post("/update", async (req, res) => {
   }-${date.getFullYear()}`;
 
   const cardapioDeHoje = await findCardapioByDate(toDayDate, (e) => e);
-//  console.log(cardapioDeHoje);
+  //  console.log(cardapioDeHoje);
 
   await update(async (callback) => {
     await isItNeedToNotify(cardapioDeHoje, toDayDate, (next) => {
@@ -85,6 +87,15 @@ router.post("/update", async (req, res) => {
   });
   res.send("ok");
 });
+
+router.post("/news", async (req, res) => {
+  await postNews(req, res);
+});
+
+router.get("/news", async (req, res)=>{
+  const resolute = await getNews((doc)=>doc);
+  res.json(resolute);
+})
 
 async function update(callback) {
   await getAllCardapio(async (next) => {
