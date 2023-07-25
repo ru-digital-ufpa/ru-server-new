@@ -189,10 +189,13 @@ async function crioFeedback(req, res) {
 
 async function postNews(req, res){
   console.log(req.body);
-  const { imageLink, newsMesg} = req.body;
+  const { imageUrl, msg,isImage,title,textColor} = req.body;
   const newNews = new News({
-    imageLink: imageLink,
-    newsMesg: newsMesg,
+    title:title,
+    imageUrl: imageUrl,
+    msg: msg,
+    isImage:isImage,
+    textColor:textColor,
   });
   try {
     await newNews.save().then((doc)=>{

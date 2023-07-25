@@ -165,11 +165,20 @@ const postUsersTokens = new Schema(
 
 const postNews = new Schema(
   {
-    imageLink: {
+    imageUrl: {
       type: String,
       unique: true,
     },
-    newsMesg: {
+    msg: {
+      type: String,
+    },
+    isImage:{
+      type: Boolean,
+    },
+    title:{
+      type:String,
+    },
+    textColor:{
       type: String,
     },
   },
