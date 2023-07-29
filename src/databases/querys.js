@@ -188,7 +188,7 @@ async function crioFeedback(req, res) {
 }
 
 async function postNews(req, res){
-  console.log(req.body);
+  // console.log(req.body);
   const { imageUrl, msg,isImage,title,textColor} = req.body;
   const newNews = new News({
     title:title,
@@ -203,6 +203,7 @@ async function postNews(req, res){
       return res.status(200).json({msg:"ok"})
     })
   }catch (err){
+    // console.log(err);
     return res.status(404).json({ msg: "cant post new News" });
   }
 }

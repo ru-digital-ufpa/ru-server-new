@@ -167,7 +167,6 @@ const postNews = new Schema(
   {
     imageUrl: {
       type: String,
-      unique: true,
     },
     msg: {
       type: String,
