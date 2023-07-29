@@ -203,7 +203,7 @@ async function postNews(req, res){
       return res.status(200).json({msg:"ok"})
     })
   }catch (err){
-    // console.log(err);
+    console.log(err);
     return res.status(404).json({ msg: "cant post new News" });
   }
 }
