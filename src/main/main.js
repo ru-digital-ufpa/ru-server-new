@@ -75,9 +75,9 @@ router.post("/update", async (req, res) => {
   //  console.log(cardapioDeHoje);
 
   await update(async (callback) => {
-    await isItNeedToNotify(cardapioDeHoje, toDayDate, (next) => {
+    await isItNeedToNotify(cardapioDeHoje, toDayDate, async (next) => {
       //console.log(next);
-      notifyUserCardapioDeHojeMudou({
+      await notifyUserCardapioDeHojeMudou({
         almoco: next.almoco,
         jantar: next.jantar,
         nome: next.nomeDaRefei,

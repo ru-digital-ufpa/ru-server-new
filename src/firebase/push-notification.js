@@ -8,11 +8,11 @@ const fcm = new FCM(serverKey);
 
 // get all users tokens
 
-async function notifyUserCardapioDeHojeMudou({ almoco, jantar, nome }) {
+async function notifyUserCardapioDeHojeMudou({ almoco, jantar }) {
   const userToken = await getAllUsersTokens((d) => d);
   // console.log(userToken);
 
-  if ((!almoco && !jantar) || !nome) {
+  if ((almoco.isAlmocoNeed && jantar.isJantarNeed)) {
     const message = {
       registration_ids: userToken,
       notification: {
@@ -24,25 +24,25 @@ async function notifyUserCardapioDeHojeMudou({ almoco, jantar, nome }) {
       
     };
     sendNotification(message);
-  } else if (!almoco) {
+  } else if (almoco.isAlmocoNeed) {
     // console.log("info:almoco");
     const message = {
       registration_ids: userToken,
       notification: {
-        title: "Alteração no cardápio",
-        body: "Cardápio do almoço foi alterado.",
+        title: "Cardápio do almoço foi alterado.",
+        body: "De " + almoco.oldAlmoco + " para " + almoco.newAlmoco,
         channel_id: "ru_digital",
         channelId: "ru_digital",
       },
     };
     sendNotification(message);
-  } else if (!jantar) {
+  } else if (jantar.isJantarNeed) {
     // console.log("info: jantar");
     const message = {
       registration_ids: userToken,
       notification: {
-        title: "Alteração no cardápio",
-        body: "Cardápio do jantar foi alterado.",
+        title: "Cardápio do jantar foi alterado.",
+        body: "De " + jantar.oldJantar + " para " + jantar.newJantar,
         channelId: "ru_digital",
         channel_id: "ru_digital",
         // android_channel_id: "your_channel_id",
@@ -62,7 +62,7 @@ async function novoCardapioDaSemana() {
     registration_ids: userToken,
     notification: {
       title: "Novo cardápio da semana",
-      body: "Oi! O cardápio desta semana já está disponível.",
+      body: "Olá! O cardápio desta semana já está disponível.",
       channelId: "ru_digital",
       channel_id: "ru_digital",
     },
