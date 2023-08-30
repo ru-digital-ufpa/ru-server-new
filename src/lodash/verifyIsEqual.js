@@ -30,34 +30,42 @@ async function isItNeedToNotify(oldCardapio, date, next) {
 
     // console.log(oldCardapio.amoco.nomeDaRefei);
 
+    // Declare variáveis para armazenar informações sobre o almoço e o jantar.
     let almoco;
     let jantar;
 
+    // Verifique se é necessário fazer algo para o almoço (isAlmoco é uma variável que deve ser definida anteriormente).
     if (!isAlmoco) {
+      // Se for necessário fazer algo para o almoço, obtenha o nome antigo e novo do cardápio.
       const old = oldCardapio.amoco.nomeDaRefei;
       const novo = newCardapio.amoco.nomeDaRefei;
+
+      // Crie o objeto almoco com informações sobre o almoço.
       almoco = {
-        isAlmocoNeed: true,
-        oldAlmoco: old,
-        newAlmoco: novo,
+        isAlmocoNeed: true, // Indica que é necessário fazer algo para o almoço.
+        oldAlmoco: old, // Nome antigo do almoço.
+        newAlmoco: novo, // Nome novo do almoço.
       };
     } else {
+      // Se não for necessário fazer nada para o almoço, crie um objeto almoco com isAlmocoNeed definido como falso.
       almoco = {
-        isAlmocoNeed: false,
+        isAlmocoNeed: false, // Indica que não é necessário fazer nada para o almoço.
       };
     }
 
+    // Repita o mesmo processo para o jantar.
     if (!isJantar) {
       const old = oldCardapio.jantar.nomeDaRefei;
       const novo = newCardapio.jantar.nomeDaRefei;
+
       jantar = {
-        isJantarNeed: true,
-        oldJantar: old,
-        newJantar: novo,
+        isJantarNeed: true, // Indica que é necessário fazer algo para o jantar.
+        oldJantar: old, // Nome antigo do jantar.
+        newJantar: novo, // Nome novo do jantar.
       };
     } else {
       jantar = {
-        isJantarNeed: false,
+        isJantarNeed: false, // Indica que não é necessário fazer nada para o jantar.
       };
     }
 
