@@ -1,5 +1,5 @@
 
-const { User, Cardapio, Reclama, Feedback, UsersTokens, News } = require("./schema");
+const {Cardapio, Reclama, Feedback, UsersTokens, News } = require("./schema");
 
 
 async function postCardapio(dados, next) {
@@ -49,7 +49,7 @@ async function todosOsReclameAqui(next) {
   return next(rs);
 }
 
-async function todosOsCardpio(next) {
+async function todosOsCardapio(next) {
   const rs = await Cardapio.find((e, d) => d).clone();
   return next(rs);
 }
@@ -216,7 +216,7 @@ async function getNews(next){
 module.exports = {
   postCardapio,
   todosOsReclameAqui,
-  todosOsCardpio,
+  todosOsCardapio,
   findCardapioByDate,
   crioReclamaAqui,
   crioFeedback,
