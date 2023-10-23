@@ -152,7 +152,7 @@ async function crioReclamaAqui(req, res) {
 
 async function dropCollection(next) {
   // verify collection if new cardápio has ben added or not.
-  const toBeVerified = await todosOsCardpio((e) => e);
+  const toBeVerified = await todosOsCardapio((e) => e);
   const isToBeDrop = toBeVerified.length;
 
   // console.log(isToBeDrop);
