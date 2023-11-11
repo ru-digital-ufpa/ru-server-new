@@ -97,6 +97,13 @@ router.get("/news", async (req, res)=>{
   res.json(resolute);
 })
 
+/**
+ * Updates the cardápio (menu) and invokes a callback function.
+ * 
+ * @async
+ * @param {Function} callback - The callback function.
+ * @returns {Promise<void>} - A promise that resolves when the update is complete.
+ */
 async function update(callback) {
   await getAllCardapio(async (next) => {
     await updateCardapio(next, (e) => {
@@ -106,6 +113,9 @@ async function update(callback) {
   return callback();
 }
 
+/**
+ * Executes the main function.
+ */
 function main() {
   getAllCardapio(async (next) => {
     postCardapio(await next, (e) => {

@@ -15,24 +15,28 @@ app.use(bodyParser.json());
 const port = process.env.PORT || 5500;
 
 //connecting mongo database
-mongoose.set("strictQuery", false);
-mongoose.connect(
-  process.env.MONGO,
-  {
-    useNewUrlParser: false,
-    //useUnifiedTopology: true,
-    //strictQuery: false,
-    // useCreateIndex: true,
-    // useFindAndModify: false,
-  },
-  (err) => {
-    if (err) {
-      console.log(err);
-    } else {
-      console.log("Connected to mongo database");
-    }
+/**
+ * Connects to the MongoDB database.
+ * 
+ * @async
+ * @returns {Promise<void>} - A promise that resolves when the connection is established.
+ */
+const contectDB = async () => {
+  try {
+    mongoose.set("strictQuery", false);
+
+    const db = await mongoose.connect(process.env.MONGO, {
+      useNewUrlParser: false,
+      //useUnifiedTopology: true,
+      //strictQuery: false,
+      // useCreateIndex: true,
+      // useFindAndModify: false,
+    });
+    console.log("Connected to mongo database");
+  } catch (err) {
+    console.log(err);
   }
-);
+};
 
 const { main, drop, router, update } = require("./main/main.js");
 
@@ -40,8 +44,6 @@ const { main, drop, router, update } = require("./main/main.js");
 // notifyUserCardapioDeHojeMudou();
 
 main();
-
-
 
 // cron.schedule(
 //   "* 1 * * *",
@@ -70,7 +72,8 @@ main();
 //const db = mongoose.connection;
 
 app.use("/", router);
-
-app.listen(port, () => {
-  console.log(`Server running on port ${port}`);
+contectDB().then(() => {
+  app.listen(port, () => {
+    console.log(`Server running on port ${port}`);
+  });
 });

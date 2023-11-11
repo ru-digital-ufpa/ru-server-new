@@ -8,6 +8,14 @@ const fcm = new FCM(serverKey);
 
 // get all users tokens
 
+/**
+ * Notifies users about changes in the cardápio (menu) for today.
+ * 
+ * @async
+ * @param {Object} almoco - The lunch information.
+ * @param {Object} jantar - The dinner information.
+ * @returns {Promise<void>} - A promise that resolves when the users are notified.
+ */
 async function notifyUserCardapioDeHojeMudou({ almoco, jantar }) {
   const userToken = await getAllUsersTokens((d) => d);
   // console.log(userToken);
@@ -53,7 +61,12 @@ async function notifyUserCardapioDeHojeMudou({ almoco, jantar }) {
   }
 }
 
-//if we have new cardapio for the week.
+/**
+ * Sends a notification to all users about the new cardápio (menu) of the week.
+ * 
+ * @async
+ * @returns {Promise<void>} - A promise that resolves when the notification is sent.
+ */
 async function novoCardapioDaSemana() {
   // get user token
   const userToken = await getAllUsersTokens((d) => d);
@@ -71,6 +84,13 @@ async function novoCardapioDaSemana() {
   sendNotification(message);
 }
 
+/**
+ * Sends a notification using the Firebase Cloud Messaging service.
+ * 
+ * @async
+ * @param {Object} message - The notification message to send.
+ * @returns {Promise<void>} - A promise that resolves when the notification is sent.
+ */
 async function sendNotification(message) {
   await fcm.send(message, (err, response) => {
     if (err) {

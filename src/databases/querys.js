@@ -1,7 +1,14 @@
 
 const {Cardapio, Reclama, Feedback, UsersTokens, News } = require("./schema");
 
-
+/**
+ * Posts cardápio (menu) data to the database and invokes a callback function.
+ * 
+ * @async
+ * @param {Object} dados - The cardápio data.
+ * @param {Function} next - The callback function.
+ * @returns {Promise<void>} - A promise that resolves when the cardápio data is posted.
+ */
 async function postCardapio(dados, next) {
   const novoCadapio = new Cardapio({
     dia: dados.dia[0],
@@ -44,21 +51,51 @@ async function postCardapio(dados, next) {
   return next(resolute);
 }
 
+/**
+ * Retrieves all reclame aqui data and invokes a callback function with the result.
+ * 
+ * @async
+ * @param {Function} next - The callback function.
+ * @returns {Promise<void>} - A promise that resolves with all reclame aqui data.
+ */
 async function todosOsReclameAqui(next) {
-  const rs = await Reclama.find((e, d) => d).clone();
+  const rs = await Reclama.find().clone();
   return next(rs);
 }
 
+/**
+ * Retrieves all cardápio (menu) data and invokes a callback function with the result.
+ * 
+ * @async
+ * @param {Function} next - The callback function.
+ * @returns {Promise<void>} - A promise that resolves with all cardápio data.
+ */
 async function todosOsCardapio(next) {
-  const rs = await Cardapio.find((e, d) => d).clone();
+  const rs = await Cardapio.find().clone();
   return next(rs);
 }
 
+/**
+ * Finds a cardápio (menu) by date and invokes a callback function with the result.
+ * 
+ * @async
+ * @param {string} data - The date to search for.
+ * @param {Function} next - The callback function.
+ * @returns {Promise<void>} - A promise that resolves with the found cardápio.
+ */
 async function findCardapioByDate(data, next) {
   const cardapio = await Cardapio.findOne({ data: data });
   return next(cardapio);
 }
 
+/**
+ * Updates the cardápio (menu) data in the database and invokes a callback function.
+ * 
+ * @async
+ * @param {Object} dados - The cardápio data.
+ * @param {Function} next - The callback function.
+ * @returns {Promise<void>} - A promise that resolves when the cardápio data is updated.
+ */
 async function updateCardapio(dados, next) {
   const toUpdate = {
     dia: dados.dia[0],
@@ -105,6 +142,14 @@ async function updateCardapio(dados, next) {
   //return next(duc);
 }
 
+/**
+ * Posts a user's token.
+ * 
+ * @async
+ * @param {Object} req - The request object.
+ * @param {Function} next - The callback function.
+ * @returns {Promise<void>} - A promise that resolves when the token is posted.
+ */
 async function postUsersTokens(req, next) {
   const token = req.body;
   const isOkToInsect = await UsersTokens.findOne(token);
@@ -123,14 +168,29 @@ async function postUsersTokens(req, next) {
   return next("exiting");
 }
 
+/**
+ * Retrieves all users' tokens.
+ * 
+ * @async
+ * @param {Function} next - The callback function.
+ * @returns {Promise<void>} - A promise that resolves with an array of all tokens.
+ */
 async function getAllUsersTokens(next) {
   allTokens = [];
-  const rs = await UsersTokens.find((err, d) => d).clone();
+  const rs = await UsersTokens.find().clone();
   rs.forEach((tk) => allTokens.push(tk.token));
   // console.log(allTokens);
   return next(allTokens);
 }
 
+/**
+ * Creates a new reclamação (complaint) in the system.
+ * 
+ * @async
+ * @param {Object} req - The request object.
+ * @param {Object} res - The response object.
+ * @returns {Promise<void>} - A promise that resolves when the reclamação is created.
+ */
 async function crioReclamaAqui(req, res) {
   const { nome, email, curso, setor, msg } = req.body;
   const newReclamaAqui = new Reclama({
@@ -150,6 +210,13 @@ async function crioReclamaAqui(req, res) {
   }
 }
 
+/**
+ * Drops a collection if a certain condition is met.
+ * 
+ * @async
+ * @param {Function} next - The callback function.
+ * @returns {Promise<void>} - A promise that resolves when the collection is dropped.
+ */
 async function dropCollection(next) {
   // verify collection if new cardápio has ben added or not.
   const toBeVerified = await todosOsCardapio((e) => e);
@@ -170,6 +237,14 @@ async function dropCollection(next) {
   }
 }
 
+/**
+ * Creates a new feedback in the system.
+ * 
+ * @async
+ * @param {Object} req - The request object.
+ * @param {Object} res - The response object.
+ * @returns {Promise<void>} - A promise that resolves when the feedback is created.
+ */
 async function crioFeedback(req, res) {
   const { nome, email, msg } = req.body;
   const newFeedback = new Feedback({
@@ -187,6 +262,14 @@ async function crioFeedback(req, res) {
   }
 }
 
+/**
+ * Posts a new news article.
+ * 
+ * @async
+ * @param {Object} req - The request object.
+ * @param {Object} res - The response object.
+ * @returns {Promise<void>} - A promise that resolves when the news article is posted.
+ */
 async function postNews(req, res){
   // console.log(req.body);
   const { imageUrl, msg,isImage,title,textColor} = req.body;
@@ -208,8 +291,15 @@ async function postNews(req, res){
   }
 }
 
+/**
+ * Retrieves all news articles and invokes a callback function with the result.
+ * 
+ * @async
+ * @param {Function} next - The callback function.
+ * @returns {Promise<void>} - A promise that resolves with all news articles.
+ */
 async function getNews(next){
-  const res = await News.find((e, doc)=> doc).clone();
+  const res = await News.find().clone();
   return next(res);
 }
 

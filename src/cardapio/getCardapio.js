@@ -4,9 +4,13 @@ const cheerio = require('cheerio');
 
 let dateObj = new Date();
 
-
-
-
+/**
+ * Retrieves all cardápio (menu) data from a website and invokes a callback function.
+ * 
+ * @async
+ * @param {Function} next - The callback function.
+ * @returns {Promise<void>} - A promise that resolves when the cardápio data is retrieved.
+ */
 async function getAllCardapio (next){
     const siteRuUrl = process.env.RUSITE;
     try {
